@@ -27,14 +27,7 @@ import { PlaygroundWorkflows } from "../playground/workflows";
 import { YAMLException } from "js-yaml";
 import { useRouter } from "next/router";
 import { wait } from "../utils/wait";
-import { PullRequestActivities } from "../github-actions-interpreter/lib/events/activities";
-
-const defaultEvents: Event[] = [
-  {
-    event: "push",
-    branch: "master",
-  }
-];
+import { EventConfiguration } from "../components/eventConfiguration";
 
 const defaultEventConfiguration: { [key: string]: Event } = {
   push: {
@@ -204,114 +197,15 @@ const PlaygroundPage: NextPage = () => {
           <div className="flex-1 justify-start">
             <h2>Event</h2>
           </div>
-          <div className="flex flex-initial justify-end">
-            <SelectMenu>
-              <Button as="summary">
-                Event type: {selectedEventType} <ChevronDownIcon />
-              </Button>
-              <SelectMenu.Modal>
-                <SelectMenu.List>
-                  {["push", "pull_request", "issues"].map((eventType) => (
-                    <SelectMenu.Item
-                      key={eventType}
-                      selected={eventType === selectedEventType}
-                      onClick={() => {
-                        resetEventTypeConfiguration(eventType);
-                      }}
-                    >
-                      {eventType}
-                    </SelectMenu.Item>
-                  ))}
-                </SelectMenu.List>
-              </SelectMenu.Modal>
-            </SelectMenu>
-          </div>
         </div>
 
-        <div className="flex items-center my-3">
-          {(selectedEventConfiguration.event === "push" || selectedEventConfiguration.event === "pull_request") && (
-            <>
-              <TextInput aria-label="Branch name" name="branch-name" placeholder="Branch name" value={selectedEventConfiguration.branch} onChange={setSelectedBranch} />
-              <TextInput aria-label="File" name="files" placeholder="Files" value={selectedEventConfiguration.files} onChange={setSelectedFiles} />
-            </>
-          )}
-          {selectedEventConfiguration.event === "pull_request" && (
-            <SelectMenu>
-              <Button as="summary">
-                Action: {selectedEventConfiguration.action} <ChevronDownIcon />
-              </Button>
-              <SelectMenu.Modal>
-                <SelectMenu.List>
-                  {[
-                    "assigned",
-                    "unassigned",
-                    "labeled",
-                    "unlabeled",
-                    "opened",
-                    "edited",
-                    "closed",
-                    "reopened",
-                    "synchronize",
-                    "ready_for_review",
-                    "locked",
-                    "unlocked",
-                    "review_requested",
-                    "review_request_removed"
-                  ].map((actionType) => (
-                    <SelectMenu.Item
-                      key={actionType}
-                      selected={actionType === selectedEventType}
-                      onClick={() => {
-                        setSelectedActionType(actionType);
-                      }}
-                    >
-                      {actionType}
-                    </SelectMenu.Item>
-                  ))}
-                </SelectMenu.List>
-              </SelectMenu.Modal>
-            </SelectMenu>
-          )}
-          {selectedEventConfiguration.event === "issues" && (
-            <SelectMenu>
-              <Button as="summary">
-                Action: {selectedEventConfiguration.action} <ChevronDownIcon />
-              </Button>
-              <SelectMenu.Modal>
-                <SelectMenu.List>
-                  {[
-                    "opened",
-                    "edited",
-                    "deleted",
-                    "transferred",
-                    "pinned",
-                    "unpinned",
-                    "closed",
-                    "reopened",
-                    "assigned",
-                    "unassigned",
-                    "labeled",
-                    "unlabeled",
-                    "locked",
-                    "unlocked",
-                    "milestoned",
-                    "demilestoned",
-                  ].map((actionType) => (
-                    <SelectMenu.Item
-                      key={actionType}
-                      selected={actionType === selectedEventType}
-                      onClick={() => {
-                        setSelectedActionType(actionType);
-                      }}
-                    >
-                      {actionType}
-                    </SelectMenu.Item>
-                  ))}
-                </SelectMenu.List>
-              </SelectMenu.Modal>
-            </SelectMenu>
-          )}
-        </div>
+        <EventConfiguration
+          event={selectedEventConfiguration}
+          resetEventTypeConfiguration={resetEventTypeConfiguration}
+          setSelectedBranch={setSelectedBranch}
+          setSelectedFiles={setSelectedFiles}
+          setSelectedActionType={setSelectedActionType}
+          />
 
         {err && (
           <div className="mt-2">
