@@ -12,6 +12,7 @@ type EventConfigurationProps = {
   setSelectedBranch: (branch: ChangeEvent<HTMLInputElement>) => void;
   setSelectedFiles: (files: ChangeEvent<HTMLInputElement>) => void;
   setSelectedActionType: (actionType: string) => void;
+  removeEvent: () => void;
 };
 
 export const EventConfiguration: React.FC<EventConfigurationProps> = ({
@@ -20,6 +21,7 @@ export const EventConfiguration: React.FC<EventConfigurationProps> = ({
   setSelectedBranch,
   setSelectedFiles,
   setSelectedActionType,
+  removeEvent,
 }) => {
   return (
     <div className="flex items-center my-3">
@@ -45,12 +47,12 @@ export const EventConfiguration: React.FC<EventConfigurationProps> = ({
       </SelectMenu>
       {(event.event === "push" || event.event === "pull_request") && (
       <>
-        <TextInput aria-label="Branch name" name="branch-name" placeholder="Branch name" value={event.branch} onChange={setSelectedBranch} />
-        <TextInput aria-label="File" name="files" placeholder="Files" value={event.files} onChange={setSelectedFiles} />
+        <TextInput aria-label="Branch name" name="branch-name" placeholder="Branch name" value={event.branch} onChange={setSelectedBranch} className="ml-2" />
+        <TextInput aria-label="File" name="files" placeholder="Files" value={event.files?.join(", ")} onChange={setSelectedFiles} className="ml-2"/>
       </>
       )}
       {event.event === "pull_request" && (
-      <SelectMenu>
+      <SelectMenu className="ml-2">
           <Button as="summary">
           Action: {event.action} <ChevronDownIcon />
           </Button>
@@ -87,7 +89,7 @@ export const EventConfiguration: React.FC<EventConfigurationProps> = ({
       </SelectMenu>
       )}
       {event.event === "issues" && (
-      <SelectMenu>
+      <SelectMenu className="ml-2">
           <Button as="summary">
           Action: {event.action} <ChevronDownIcon />
           </Button>
@@ -125,6 +127,7 @@ export const EventConfiguration: React.FC<EventConfigurationProps> = ({
         </SelectMenu.Modal>
       </SelectMenu>
     )}
+    <Button className="ml-2" onClick={removeEvent}>-</Button>
     </div>
   );
 };
