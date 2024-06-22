@@ -63,6 +63,15 @@ const PlaygroundPage: NextPage = () => {
         setInput(workflowText);
       }
     }
+    const e: string | undefined = query.e as string;
+    console.log(e);
+    if (e) {
+      const eventText = decompressFromEncodedURIComponent(e);
+      if (eventText) {
+        const event = JSON.parse(eventText);
+        setEventConfiguration(event);
+      }
+    }
   }, [query]);
 
   const [selectedWorkflow, setSelectedWorkflow] = React.useState(
@@ -72,8 +81,9 @@ const PlaygroundPage: NextPage = () => {
   const [input, setInput] = React.useState(selectedWorkflow.workflow);
   const [copied, setCopied] = React.useState(false);
   const copyContent = React.useCallback(async () => {
-    const urlContent = compressToEncodedURIComponent(input);
-    const url = `https://github-actions-hero.now.sh/playground?w=${urlContent}`;
+    const workflowUrlContent = compressToEncodedURIComponent(input);
+    const eventUrlContent = compressToEncodedURIComponent(JSON.stringify(eventConfiguration));
+    const url = `https://github-actions-hero.now.sh/playground?w=${workflowUrlContent}&e=${eventUrlContent}`;
     await navigator.clipboard.writeText(url);
     setCopied(true);
     await wait(2000);
